@@ -1,0 +1,24 @@
+diff --git a/mtkclient/Library/Connection/usblib.py b/mtkclient/Library/Connection/usblib.py
+index fafb1ab..00a877b 100644
+--- a/mtkclient/Library/Connection/usblib.py
++++ b/mtkclient/Library/Connection/usblib.py
+@@ -132,11 +132,17 @@ class UsbClass(DeviceClass):
+         if sys.platform.startswith('freebsd') or sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
+             self.backend = usb.backend.libusb1.get_backend(find_library=lambda x: "libusb-1.0.so")
+         elif sys.platform.startswith('win32'):
+-            if calcsize("P") * 8 == 64:
++            dll = os.environ.get("MTK_LIBUSB_DLL")
++            if dll:
++                self.backend = usb.backend.libusb1.get_backend(find_library=lambda x: dll)
++            elif calcsize("P") * 8 == 64:
+                 self.backend = usb.backend.libusb1.get_backend(find_library=lambda x: "libusb-1.0.dll")
+             else:
+                 self.backend = usb.backend.libusb1.get_backend(find_library=lambda x: "libusb32-1.0.dll")
+-        if self.backend is not None:
++        if self.backend is not None and not os.environ.get("MTK_NO_USBDK"):
++            # option 1 is LIBUSB_OPTION_USE_USBDK; without a working UsbDk install
++            # this makes every later enumeration fail, so allow opting out and
++            # falling back to the plain WinUSB backend.
+             try:
+                 self.backend.lib.libusb_set_option.argtypes = [c_void_p, c_int]
+                 self.backend.lib.libusb_set_option(self.backend.ctx, 1)

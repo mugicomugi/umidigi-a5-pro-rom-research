@@ -1,0 +1,23 @@
+# Never commit ROMs, firmware or partition images - they are large and most are
+# not ours to redistribute. The docs link to the sources with checksums instead.
+*.img
+*.zip
+*.rar
+*.7z
+*.xz
+*.gz
+*.br
+*.dat
+*.bin
+*.dll
+*.exe
+*.msi
+
+# Working directories the tools create
+evox_boot/
+stock_boot/
+parts/
+push_done.txt
+
+__pycache__/
+*.pyc
