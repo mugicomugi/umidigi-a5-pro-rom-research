@@ -1,0 +1,3 @@
+* text=auto
+# git apply against mtkclient's LF sources fails if a checkout turns this into CRLF
+*.patch text eol=lf
